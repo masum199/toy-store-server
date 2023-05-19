@@ -55,7 +55,7 @@ async function run() {
 
 
 
-
+    // to insert toys
     app.post('/alltoys', async (req, res) => {
         const toys = req.body;
         console.log(toys)
@@ -63,15 +63,45 @@ async function run() {
         res.send(result)
       })
 
+      // to get allToys
       app.get('/alltoys', async (req, res) => {
         const result = await toysStoreData.find().toArray()
         res.send(result)
       })
 
+      // to see vew toys details
       app.get('/alltoys/toys/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id)}
         const result = await toysStoreData.findOne(query)
+        res.send(result)
+      })
+
+      // to update
+      app.put('/alltoys/put/:id', async (req, res) => {
+        const id = req.params.id;
+        const user = req.body
+        console.log(id,user)
+        const filter = {_id: new ObjectId (id)}
+        const options = {upsert: true}
+        const updatedUser = {
+          $set: {
+            price: user.price,
+            quantity: user.quantity,
+            details: user.details
+          }
+        }
+  
+        const result = await toysStoreData.updateOne(filter,updatedUser,options)
+        res.send(result);
+      })
+
+
+      // to delete toys
+      app.delete('/alltoys/delete/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await toysStoreData.deleteOne(query);
         res.send(result)
       })
 
