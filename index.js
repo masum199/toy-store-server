@@ -5,8 +5,15 @@ const app = express()
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
+const corsOptions ={
+  origin:'*', 
+  credentials:true,
+  optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions))
 app.use(express.json());
-app.use(cors());
+
 
 // mongo
 
@@ -24,16 +31,16 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const toysStoreData = client.db('toystore').collection('toys');
     const toysStoreCategories = client.db('toystore').collection('categories');
 
 
-    const indexKeys = { toyName: 1}
-    const indexOptions = { name: "toy"}
+    // const indexKeys = { toyName: 1}
+    // const indexOptions = { name: "toy"}
 
-    const result = await toysStoreData.createIndex(indexKeys,indexOptions)
+    // const result = await toysStoreData.createIndex(indexKeys,indexOptions)
     
     app.get('/alltoys/:text', async (req, res) => {
       const searchText = req.params.text;
