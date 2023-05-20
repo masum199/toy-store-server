@@ -27,6 +27,8 @@ async function run() {
     await client.connect();
 
     const toysStoreData = client.db('toystore').collection('toys');
+    const toysStoreCategories = client.db('toystore').collection('categories');
+
 
     const indexKeys = { toyName: 1}
     const indexOptions = { name: "toy"}
@@ -45,12 +47,23 @@ async function run() {
       res.send(result);
     });
 
-
+    // data of user and short
     app.get('/alltoys/user/:email', async (req, res) => {
       const email = req.params.email;
-      console.log(email);
-      const result = await toysStoreData.find({ sellerEmail: email }).toArray();
-      res.send(result);
+      const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+    
+      try {
+        const result = await toysStoreData
+          .find({ sellerEmail: email })
+          .collation({ locale: 'en_US', numericOrdering: true }) 
+          .sort({ price: sortOrder })
+          .toArray();
+    
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+      }
     });
 
 
@@ -68,6 +81,20 @@ async function run() {
         const result = await toysStoreData.find().toArray()
         res.send(result)
       })
+
+      // categories
+      app.get('/categories', async (req, res) => {
+        const result = await toysStoreCategories.find().toArray()
+        res.send(result)
+      })
+      app.get('/categories/:id', async (req, res) => {
+       const id = req.params.id;
+        const query = { _id: new ObjectId(id)}
+        const result = await toysStoreCategories.findOne(query)
+        res.send(result)
+      })
+
+
 
       // to see vew toys details
       app.get('/alltoys/toys/:id', async (req, res) => {
