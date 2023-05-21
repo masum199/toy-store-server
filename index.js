@@ -34,7 +34,7 @@ async function run() {
     // await client.connect();
 
     const toysStoreData = client.db('toystore').collection('toys');
-    const toysStoreCategories = client.db('toystore').collection('categories');
+    
 
 
     // const indexKeys = { toyName: 1}
@@ -83,25 +83,11 @@ async function run() {
         res.send(result)
       })
 
-      // to get allToys
+      // to get  all the Toys
       app.get('/alltoys', async (req, res) => {
         const result = await toysStoreData.find().toArray()
         res.send(result)
       })
-
-      // categories
-      app.get('/categories', async (req, res) => {
-        const result = await toysStoreCategories.find().toArray()
-        res.send(result)
-      })
-      app.get('/categories/:id', async (req, res) => {
-       const id = req.params.id;
-        const query = { _id: new ObjectId(id)}
-        const result = await toysStoreCategories.findOne(query)
-        res.send(result)
-      })
-
-
 
       // to see vew toys details
       app.get('/alltoys/toys/:id', async (req, res) => {
