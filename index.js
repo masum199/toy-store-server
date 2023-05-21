@@ -117,7 +117,7 @@ async function run() {
       })
 
 
-      // to delete toys
+      // to delete the  toys from my toys
       app.delete('/alltoys/delete/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
